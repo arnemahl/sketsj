@@ -27,6 +27,28 @@ export default class Editor extends React.Component {
     newShape: void 0,
   }
 
+  componentDidMount() {
+    window.addEventListener('keydown', this.onKeyDown);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
+  onKeyDown = (event) => {
+    window.event = event;
+
+    if (event.ctrlKey) {
+      // eslint-disable-next-line default-case
+      switch (event.key) {
+        case 'z':
+        case 'Z':
+          this.setState(state => ({
+            shapes: state.shapes.slice(0, -1),
+          }));
+          break;
+      }
+    }
+  }
+
   onMouseDown = (event) => {
     this.setState({
       newShape: {
