@@ -43,7 +43,7 @@ export default class Editor extends React.Component {
     this.node.addEventListener('mouseup', this.onMouseUp);
   }
   onMouseMove = (event) => {
-    this.setState(state => console.log('onMouseMove', state) || ({
+    this.setState(state => ({
       newShape: {
         ...state.newShape,
         endPoint: getPoint(event),
@@ -58,10 +58,6 @@ export default class Editor extends React.Component {
       shapes: state.shapes.concat([state.newShape]),
       newShape: void 0,
     }));
-  }
-
-  printShapes = () => {
-    console.log('Shapes:\n', this.node.outerHTML.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
   }
 
   getBlobUrl = (event) => {

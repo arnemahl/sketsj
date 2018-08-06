@@ -8,8 +8,6 @@ export default class ColorPicker extends React.Component {
       this.props.onChange({ [prop]: event.target.value })
     ;
 
-    console.log(`this.props`, this.props); // DEBUG
-
     return (
       <S.Container>
         <input
