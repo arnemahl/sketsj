@@ -4,6 +4,8 @@ import * as S from './Editor.style.js';
 
 import Rect from './Rect/Rect';
 
+import generateId from 'util/generateId';
+
 function getPoint(event) {
   return {
     x: event.pageX,
@@ -22,6 +24,7 @@ export default class Editor extends React.Component {
   onMouseDown = (event) => {
     this.setState({
       newShape: {
+        id: generateId(),
         startPoint: getPoint(event),
         endPoint: getPoint(event),
       },
@@ -56,7 +59,7 @@ export default class Editor extends React.Component {
           onMouseDown={this.onMouseDown}
         >
           {this.state.shapes.map(shape =>
-            <Rect rect={shape} />
+            <Rect key={shape.id} rect={shape} />
           )}
           {this.state.newShape &&
             <Rect rect={this.state.newShape} />
