@@ -21,6 +21,7 @@ export default class Editor extends React.Component {
 
   state = {
     shapes: [],
+    removedShapes: [],
     tool: 'ellipse',
     fill: '#ffdab9',
     stroke: '#ff7f50',
@@ -43,6 +44,14 @@ export default class Editor extends React.Component {
         case 'Z':
           this.setState(state => ({
             shapes: state.shapes.slice(0, -1),
+            removedShapes: state.removedShapes.concat(state.shapes.slice(-1)),
+          }));
+          break;
+        case 'y':
+        case 'Y':
+          this.setState(state => ({
+            removedShapes: state.removedShapes.slice(0, -1),
+            shapes: state.shapes.concat(state.removedShapes.slice(-1)),
           }));
           break;
       }
@@ -78,6 +87,7 @@ export default class Editor extends React.Component {
 
     this.setState(state => ({
       shapes: state.shapes.concat([state.newShape]),
+      removedShapes: [],
       newShape: void 0,
     }));
   }
