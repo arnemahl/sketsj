@@ -25,6 +25,7 @@ export default class Editor extends React.Component {
     tool: 'ellipse',
     fill: '#ffdab9',
     stroke: '#ff7f50',
+    strokeWidth: 1,
     newShape: void 0,
   }
 
@@ -65,6 +66,7 @@ export default class Editor extends React.Component {
         type: this.state.tool,
         fill: this.state.fill + halfOpaque,
         stroke: this.state.stroke,
+        strokeWidth: this.state.strokeWidth,
         startPoint: getPoint(event),
         endPoint: getPoint(event),
       },
@@ -110,7 +112,7 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    const { tool, fill, stroke } = this.state;
+    const { tool, fill, stroke, strokeWidth } = this.state;
 
     return (
       <S.Editor>
@@ -127,7 +129,7 @@ export default class Editor extends React.Component {
         </svg>
         <S.Toolbar>
           <ToolSelector tool={tool} onChange={tool => this.setState({ tool })} fill={fill} stroke={stroke} />
-          <ColorPicker fill={fill} stroke={stroke} onChange={this.setState.bind(this)} />
+          <ColorPicker fill={fill} stroke={stroke} strokeWidth={strokeWidth} onChange={this.setState.bind(this)} />
           <a href={this.getBlobUrl()} download="test.svg">
             Download SVG
           </a>

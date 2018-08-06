@@ -12,19 +12,23 @@ export default class ColorPicker extends React.Component {
       <S.Container>
         <input
           type="color"
-          id="fill"
-          name="color"
           value={this.props.fill}
           onChange={set('fill')}
           title="Select fill"
         />
         <input
           type="color"
-          id="fill"
-          name="color"
           value={this.props.stroke}
           onChange={set('stroke')}
           title="Select stroke"
+        />
+        <input
+          type="number"
+          min="0"
+          value={this.props.strokeWidth}
+          onChange={set('strokeWidth')}
+          title="Select stroke width"
+          style={{maxWidth: '80%'}}
         />
       </S.Container>
     );
