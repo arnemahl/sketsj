@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import * as S from './Editor.style.js';
 
-import Rect from './Rect/Rect';
+import Shape from './Shape/Shape';
 
 import generateId from 'util/generateId';
 
@@ -17,7 +17,7 @@ export default class Editor extends React.Component {
 
   state = {
     shapes: [],
-    tool: 'rect',
+    tool: 'ellipse',
     newShape: void 0,
   }
 
@@ -25,6 +25,7 @@ export default class Editor extends React.Component {
     this.setState({
       newShape: {
         id: generateId(),
+        type: this.state.tool,
         startPoint: getPoint(event),
         endPoint: getPoint(event),
       },
@@ -59,10 +60,10 @@ export default class Editor extends React.Component {
           onMouseDown={this.onMouseDown}
         >
           {this.state.shapes.map(shape =>
-            <Rect key={shape.id} rect={shape} />
+            <Shape key={shape.id} shape={shape} />
           )}
           {this.state.newShape &&
-            <Rect rect={this.state.newShape} />
+            <Shape shape={this.state.newShape} />
           }
         </S.Svg>
       </S.Editor>
