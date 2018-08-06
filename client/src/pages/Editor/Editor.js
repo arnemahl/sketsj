@@ -60,6 +60,10 @@ export default class Editor extends React.Component {
     }));
   }
 
+  printShapes = () => {
+    console.log('Shapes:\n', this.node.outerHTML.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
+  }
+
   render() {
     const { tool, fill, stroke } = this.state;
 
@@ -79,6 +83,9 @@ export default class Editor extends React.Component {
         <S.Toolbar>
           <ToolSelector tool={tool} onChange={tool => this.setState({ tool })} fill={fill} stroke={stroke} />
           <ColorPicker fill={fill} stroke={stroke} onChange={this.setState.bind(this)} />
+          <button onClick={this.printShapes}>
+            Print shapes to console
+          </button>
         </S.Toolbar>
       </S.Editor>
     );
