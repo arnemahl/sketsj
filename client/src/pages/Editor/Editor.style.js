@@ -8,3 +8,7 @@ export const Svg = styled.svg`
   height: 100vh;
   box-sizing: border-box;
 `;
+
+export const Toolbar = styled.div`
+  background-color: #ddd;
+`;

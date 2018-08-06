@@ -3,7 +3,7 @@ import React from 'react';
 export default class Rect extends React.PureComponent {
 
   render() {
-    const { startPoint, endPoint } = this.props.shape;
+    const { startPoint, endPoint, fill, stroke } = this.props.shape;
 
     const x = Math.min(startPoint.x, endPoint.x);
     const y = Math.min(startPoint.y, endPoint.y);
@@ -12,8 +12,8 @@ export default class Rect extends React.PureComponent {
 
     return (
       <rect
-        fill="peachpuff"
-        stroke="coral"
+        fill={fill}
+        stroke={stroke}
         x={x}
         y={y}
         width={width}

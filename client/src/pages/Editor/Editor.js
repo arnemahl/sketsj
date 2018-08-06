@@ -4,6 +4,7 @@ import * as S from './Editor.style.js';
 
 import Shape from './Shape/Shape';
 import ToolSelector from './ToolSelector/ToolSelector';
+import ColorPicker from './ColorPicker/ColorPicker';
 
 import generateId from 'util/generateId';
 
@@ -14,11 +15,15 @@ function getPoint(event) {
   };
 }
 
+const halfOpaque = '80';
+
 export default class Editor extends React.Component {
 
   state = {
     shapes: [],
     tool: 'ellipse',
+    fill: '#ffdab9',
+    stroke: '#ff7f50',
     newShape: void 0,
   }
 
@@ -27,6 +32,8 @@ export default class Editor extends React.Component {
       newShape: {
         id: generateId(),
         type: this.state.tool,
+        fill: this.state.fill + halfOpaque,
+        stroke: this.state.stroke,
         startPoint: getPoint(event),
         endPoint: getPoint(event),
       },
@@ -54,6 +61,8 @@ export default class Editor extends React.Component {
   }
 
   render() {
+    const { tool, fill, stroke } = this.state;
+
     return (
       <S.Editor>
         <S.Svg
@@ -67,7 +76,10 @@ export default class Editor extends React.Component {
             <Shape shape={this.state.newShape} />
           }
         </S.Svg>
-        <ToolSelector tool={this.state.tool} onChange={tool => this.setState({ tool })} />
+        <S.Toolbar>
+          <ToolSelector tool={tool} onChange={tool => this.setState({ tool })} fill={fill} stroke={stroke} />
+          <ColorPicker fill={fill} stroke={stroke} onChange={this.setState.bind(this)} />
+        </S.Toolbar>
       </S.Editor>
     );
   }
