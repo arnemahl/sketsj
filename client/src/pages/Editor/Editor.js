@@ -64,12 +64,29 @@ export default class Editor extends React.Component {
     console.log('Shapes:\n', this.node.outerHTML.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
   }
 
+  getBlobUrl = (event) => {
+    if (!this.node) {
+      return void 0;
+    }
+
+    const { x, y, width, height } = this.node.getBoundingClientRect();
+
+    const svgText = this.node.outerHTML.replace(
+      '<svg',
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width-x}" height="${height-y}"`
+    );
+    const blob = new Blob([svgText], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+
+    return url;
+  }
+
   render() {
     const { tool, fill, stroke } = this.state;
 
     return (
       <S.Editor>
-        <S.Svg
+        <svg
           ref={node => this.node = ReactDOM.findDOMNode(node)}
           onMouseDown={this.onMouseDown}
         >
@@ -79,13 +96,13 @@ export default class Editor extends React.Component {
           {this.state.newShape &&
             <Shape shape={this.state.newShape} />
           }
-        </S.Svg>
+        </svg>
         <S.Toolbar>
           <ToolSelector tool={tool} onChange={tool => this.setState({ tool })} fill={fill} stroke={stroke} />
           <ColorPicker fill={fill} stroke={stroke} onChange={this.setState.bind(this)} />
-          <button onClick={this.printShapes}>
-            Print shapes to console
-          </button>
+          <a href={this.getBlobUrl()} download="test.svg">
+            Download SVG
+          </a>
         </S.Toolbar>
       </S.Editor>
     );
