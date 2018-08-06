@@ -3,6 +3,7 @@ import React from 'react';
 import * as S from './Editor.style.js';
 
 import Shape from './Shape/Shape';
+import ToolSelector from './ToolSelector/ToolSelector';
 
 import generateId from 'util/generateId';
 
@@ -66,6 +67,7 @@ export default class Editor extends React.Component {
             <Shape shape={this.state.newShape} />
           }
         </S.Svg>
+        <ToolSelector tool={this.state.tool} onChange={tool => this.setState({ tool })} />
       </S.Editor>
     );
   }
