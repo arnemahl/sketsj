@@ -42,7 +42,10 @@ export default class Editor extends React.Component {
     this.node.removeEventListener('mousemove', this.onMouseMove);
     this.node.removeEventListener('mouseup', this.onMouseUp);
 
-    // TODO: Add the shape we just drew
+    this.setState(state => ({
+      shapes: state.shapes.concat([state.newShape]),
+      newShape: void 0,
+    }));
   }
 
   render() {
@@ -52,10 +55,11 @@ export default class Editor extends React.Component {
           ref={node => this.node = ReactDOM.findDOMNode(node)}
           onMouseDown={this.onMouseDown}
         >
+          {this.state.shapes.map(shape =>
+            <Rect rect={shape} />
+          )}
           {this.state.newShape &&
-            <Rect
-              rect={this.state.newShape}
-            />
+            <Rect rect={this.state.newShape} />
           }
         </S.Svg>
       </S.Editor>
