@@ -15,6 +15,42 @@ function getPoint(event) {
   };
 }
 
+function getShape(type, startPoint, endPoint) {
+  switch (type) {
+    case 'rect': {
+      const x = Math.min(startPoint.x, endPoint.x);
+      const y = Math.min(startPoint.y, endPoint.y);
+      const width = Math.max(startPoint.x, endPoint.x) - x;
+      const height = Math.max(startPoint.y, endPoint.y) - y;
+      return { type, x, y, width, height };
+    }
+    case 'circle': {
+      const rx = Math.abs(startPoint.x - endPoint.x);
+      const ry = Math.abs(startPoint.y - endPoint.y);
+      return {
+        type,
+        cx: startPoint.x,
+        cy: startPoint.y,
+        r: Math.max(rx, ry),
+      };
+    }
+    case 'ellipse': {
+      const rx = Math.abs(startPoint.x - endPoint.x);
+      const ry = Math.abs(startPoint.y - endPoint.y);
+      return {
+        type,
+        cx: startPoint.x,
+        cy: startPoint.y,
+        rx: rx,
+        ry: ry,
+      };
+    }
+    default:
+      console.error(`getShape: No support for shapes of type "${type}"`);
+      return false;
+  }
+}
+
 const halfOpaque = '80';
 
 export default class Editor extends React.Component {
@@ -63,12 +99,11 @@ export default class Editor extends React.Component {
     this.setState({
       newShape: {
         id: generateId(),
-        type: this.state.tool,
         fill: this.state.fill + halfOpaque,
         stroke: this.state.stroke,
         strokeWidth: this.state.strokeWidth,
-        startPoint: getPoint(event),
-        endPoint: getPoint(event),
+        ...getShape(this.state.tool, getPoint(event), getPoint(event)),
+        startPoint: getPoint(event), // <- Only used in onMouseMouve
       },
     });
 
@@ -79,7 +114,7 @@ export default class Editor extends React.Component {
     this.setState(state => ({
       newShape: {
         ...state.newShape,
-        endPoint: getPoint(event),
+        ...getShape(state.newShape.type, state.newShape.startPoint, getPoint(event)),
       },
     }));
   }

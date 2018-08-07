@@ -3,18 +3,15 @@ import React from 'react';
 export default class Ellipse extends React.PureComponent {
 
   render() {
-    const { startPoint, endPoint, ...otherProps } = this.props.shape;
-
-    const rx = Math.abs(startPoint.x - endPoint.x);
-    const ry = Math.abs(startPoint.y - endPoint.y);
+    const { shape, ...otherProps } = this.props;
 
     return (
       <ellipse
         {...otherProps}
-        cx={startPoint.x}
-        cy={startPoint.y}
-        rx={rx}
-        ry={ry}
+        cx={shape.cx}
+        cy={shape.cy}
+        rx={shape.rx}
+        ry={shape.ry}
       />
     );
   }

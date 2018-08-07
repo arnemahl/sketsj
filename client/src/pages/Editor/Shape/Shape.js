@@ -19,6 +19,9 @@ export default class Shape extends React.PureComponent {
         return <Circle shape={shape} {...stdProps} />;
       case 'ellipse':
         return <Ellipse shape={shape} {...stdProps} />;
+      default:
+        console.error(`Shape: Cannot render shapes of type "${shape.type}"`);
+        return false;
     }
   }
 }
