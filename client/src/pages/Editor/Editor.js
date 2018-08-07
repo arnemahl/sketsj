@@ -51,6 +51,24 @@ function getShape(type, startPoint, endPoint) {
   }
 }
 
+function doesShapeContainPoint(shape, point) {
+  switch (shape.type) {
+    case 'rect':
+      return shape.x <= point.x && point.x <= (shape.x + shape.width)
+          && shape.y <= point.y && point.y <= (shape.y + shape.height);
+    case 'circle':
+      return Math.sqrt(Math.pow(shape.cx - point.x, 2) + Math.pow(shape.cy - point.y, 2)) < shape.r;
+    case 'ellipse':
+      return (
+        Math.pow(shape.cx - point.x, 2) / Math.pow(shape.rx, 2) +
+        Math.pow(shape.cy - point.y, 2) / Math.pow(shape.ry, 2)
+      ) <= 1;
+    default:
+      console.error(`doesShapeContainPoint: No support for shapes of type "${shape.type}"`);
+      return false;
+  }
+}
+
 const halfOpaque = '80';
 
 export default class Editor extends React.Component {
@@ -58,6 +76,7 @@ export default class Editor extends React.Component {
   state = {
     shapes: [],
     removedShapes: [],
+    selectedShape: void 0,
     tool: 'ellipse',
     fill: '#ffdab9',
     stroke: '#ff7f50',
@@ -96,6 +115,14 @@ export default class Editor extends React.Component {
   }
 
   onMouseDown = (event) => {
+    if (this.state.tool === 'selector') {
+      const point = getPoint(event);
+
+      this.setState({
+        selectedShape: this.state.shapes.slice().reverse().find(shape => doesShapeContainPoint(shape, point))
+      });
+      return;
+    }
     this.setState({
       newShape: {
         id: generateId(),
@@ -150,13 +177,13 @@ export default class Editor extends React.Component {
     const { tool, fill, stroke, strokeWidth } = this.state;
 
     return (
-      <S.Editor>
+      <S.Editor style={this.state.tool === 'selector' ? {cursor: 'pointer'} : void 0}>
         <svg
           ref={node => this.node = ReactDOM.findDOMNode(node)}
           onMouseDown={this.onMouseDown}
         >
           {this.state.shapes.map(shape =>
-            <Shape key={shape.id} shape={shape} />
+            <Shape key={shape.id} shape={shape} isSelected={this.state.selectedShape === shape} />
           )}
           {this.state.newShape &&
             <Shape shape={this.state.newShape} />

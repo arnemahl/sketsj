@@ -26,6 +26,11 @@ export default class ToolSelector extends React.Component {
 
     return (
       <S.Container>
+        <div onClick={set('selector')} title="Select selector-tool">
+          <Svg selected={this.props.tool === 'selector'} fill={fill} stroke={stroke}>
+            <path d="M1,1 L1,7 L3,4 L7,9 L9,7 L4,3 L7,1 Z" />
+          </Svg>
+        </div>
         <div onClick={set('rect')} title="Select rectangle-tool">
           <Svg selected={this.props.tool === 'rect'} fill={fill} stroke={stroke}>
             <rect x={0} y={0} width={12} height={12} />

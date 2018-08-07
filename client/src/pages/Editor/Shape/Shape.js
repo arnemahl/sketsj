@@ -5,20 +5,27 @@ import Ellipse from './Ellipse/Ellipse';
 
 export default class Shape extends React.PureComponent {
 
+  getStdProps() {
+    const { fill, stroke, strokeWidth } = this.props.shape;
+
+    if (this.props.isSelected) {
+      return { fill: '#00a9ff33', stroke: '#00a9ff', strokeWidth  };
+    } else {
+      return { fill, stroke, strokeWidth };
+    }
+  }
+
   render() {
     const { shape } = this.props;
-
-    const { fill, stroke, strokeWidth } = this.props;
-    const stdProps = { fill, stroke, strokeWidth };
 
     // eslint-disable-next-line default-case
     switch (shape.type) {
       case 'rect':
-        return <Rect shape={shape} {...stdProps} />;
+        return <Rect shape={shape} {...this.getStdProps()} />;
       case 'circle':
-        return <Circle shape={shape} {...stdProps} />;
+        return <Circle shape={shape} {...this.getStdProps()} />;
       case 'ellipse':
-        return <Ellipse shape={shape} {...stdProps} />;
+        return <Ellipse shape={shape} {...this.getStdProps()} />;
       default:
         console.error(`Shape: Cannot render shapes of type "${shape.type}"`);
         return false;
