@@ -8,6 +8,16 @@ export const Editor = styled.div`
     height: 100vh;
     box-sizing: border-box;
   }
+
+  &.selector-tool {
+    cursor: pointer;
+  }
+  &.zoom-tool {
+    cursor: zoom-in;
+    .alt-key& {
+      cursor: zoom-out;
+    }
+  }
 `;
 
 export const Toolbar = styled.div`
