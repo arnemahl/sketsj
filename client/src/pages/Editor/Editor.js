@@ -69,6 +69,10 @@ function doesShapeContainPoint(shape, point) {
   }
 }
 
+function viewBoxString({ x, y, width, height }) {
+  return `${x} ${y} ${width} ${height}`;
+}
+
 const halfOpaque = '80';
 
 export default class Editor extends React.Component {
@@ -82,16 +86,44 @@ export default class Editor extends React.Component {
     stroke: '#ff7f50',
     strokeWidth: 1,
     newShape: void 0,
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    viewBox: {
+      x: 0,
+      y: 0,
+      width: 0.9 * window.innerWidth,
+      height: window.innerHeight,
+    },
   }
 
   componentDidMount() {
     window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
   }
   onKeyDown = (event) => {
-    window.event = event;
+    // eslint-disable-next-line default-case
+    switch (event.key) {
+      case 'Alt':
+        this.setState({
+          altKey: true
+        });
+        break;
+      case 'Control':
+        this.setState({
+          ctrlKey: true
+        });
+        break;
+      case 'Shift':
+        this.setState({
+          shiftKey: true
+        });
+        break;
+    }
 
     if (event.ctrlKey) {
       // eslint-disable-next-line default-case
@@ -113,6 +145,26 @@ export default class Editor extends React.Component {
       }
     }
   }
+  onKeyUp = (event) => {
+    // eslint-disable-next-line default-case
+    switch (event.key) {
+      case 'Alt':
+        this.setState({
+          altKey: false
+        });
+        break;
+      case 'Control':
+        this.setState({
+          ctrlKey: false
+        });
+        break;
+      case 'Shift':
+        this.setState({
+          shiftKey: false
+        });
+        break;
+    }
+  }
 
   onMouseDown = (event) => {
     if (this.state.tool === 'selector') {
@@ -120,6 +172,29 @@ export default class Editor extends React.Component {
 
       this.setState({
         selectedShape: this.state.shapes.slice().reverse().find(shape => doesShapeContainPoint(shape, point))
+      });
+      return;
+    }
+    if (this.state.tool === 'zoom') {
+      const { x, y, width, height } = this.state.viewBox;
+
+      const dZ = event.altKey ? -200 : 200;
+
+      const isWithinAllowedZoom = (
+        100 < Math.min(width, height) - dZ
+        && Math.max(width, height) - dZ <= 10000
+      );
+      if (!isWithinAllowedZoom) {
+        return;
+      }
+
+      this.setState({
+        viewBox: {
+          x: x + dZ * event.pageX / window.innerWidth,
+          y: y + dZ * event.pageY / window.innerHeight,
+          width: width - dZ,
+          height: height - dZ,
+        }
       });
       return;
     }
@@ -174,11 +249,12 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    const { tool, fill, stroke, strokeWidth } = this.state;
+    const { tool, fill, stroke, strokeWidth, altKey, ctrlKey, shiftKey, viewBox } = this.state;
 
     return (
-      <S.Editor style={this.state.tool === 'selector' ? {cursor: 'pointer'} : void 0}>
+      <S.Editor className={`${tool}-tool ${altKey ? 'alt-key' : ''} ${ctrlKey ? 'ctrl-key' : ''} ${shiftKey ? 'shift-key' : ''}`}>
         <svg
+          viewBox={viewBoxString(viewBox)}
           ref={node => this.node = ReactDOM.findDOMNode(node)}
           onMouseDown={this.onMouseDown}
         >

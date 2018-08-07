@@ -31,6 +31,12 @@ export default class ToolSelector extends React.Component {
             <path d="M1,1 L1,7 L3,4 L7,9 L9,7 L4,3 L7,1 Z" />
           </Svg>
         </div>
+        <div onClick={set('zoom')} title="Select zoom-tool">
+          <Svg selected={this.props.tool === 'zoom'} fill={fill} stroke={stroke}>
+            <polyline points="5,6 11,12 12,11, 6,5" />
+            <circle cx="4.5" cy="4.5" r="4.5" />
+          </Svg>
+        </div>
         <div onClick={set('rect')} title="Select rectangle-tool">
           <Svg selected={this.props.tool === 'rect'} fill={fill} stroke={stroke}>
             <rect x={0} y={0} width={12} height={12} />
