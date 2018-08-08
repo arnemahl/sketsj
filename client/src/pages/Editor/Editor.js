@@ -174,11 +174,14 @@ export default class Editor extends React.Component {
     if (this.state.tool === 'zoom') {
       const { x, y, width, height } = this.state.viewBox;
 
-      const dZ = event.altKey ? -200 : 200;
+      const dZ = {
+        x: this.canvasWidth() * (event.altKey ? -0.2 : 0.2),
+        y: this.canvasHeight() * (event.altKey ? -0.2 : 0.2),
+      };
 
       const isWithinAllowedZoom = (
-        100 < Math.min(width, height) - dZ
-        && Math.max(width, height) - dZ <= 10000
+        100 < Math.min(width - dZ.x, height - dZ.y)
+        && Math.max(width - dZ.x, height - dZ.y) <= 10000
       );
       if (!isWithinAllowedZoom) {
         return;
@@ -186,10 +189,10 @@ export default class Editor extends React.Component {
 
       this.setState({
         viewBox: {
-          x: x + dZ * event.pageX / this.canvasWidth(),
-          y: y + dZ * event.pageY / this.canvasHeight(),
-          width: width - dZ,
-          height: height - dZ,
+          x: x + dZ.x * event.pageX / this.canvasWidth(),
+          y: y + dZ.y * event.pageY / this.canvasHeight(),
+          width: width - dZ.x,
+          height: height - dZ.y,
         }
       });
       return;
