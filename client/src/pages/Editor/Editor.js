@@ -8,13 +8,6 @@ import ColorPicker from './ColorPicker/ColorPicker';
 
 import generateId from 'util/generateId';
 
-function getPoint(event) {
-  return {
-    x: event.pageX,
-    y: event.pageY,
-  };
-}
-
 function getShape(type, startPoint, endPoint) {
   switch (type) {
     case 'rect': {
@@ -77,6 +70,9 @@ const halfOpaque = '80';
 
 export default class Editor extends React.Component {
 
+  canvasWidth = () => 0.9 * window.innerWidth;
+  canvasHeight = () => window.innerHeight;
+
   state = {
     shapes: [],
     removedShapes: [],
@@ -92,8 +88,8 @@ export default class Editor extends React.Component {
     viewBox: {
       x: 0,
       y: 0,
-      width: 0.9 * window.innerWidth,
-      height: window.innerHeight,
+      width: this.canvasWidth(),
+      height: this.canvasHeight(),
     },
   }
 
@@ -168,7 +164,7 @@ export default class Editor extends React.Component {
 
   onMouseDown = (event) => {
     if (this.state.tool === 'selector') {
-      const point = getPoint(event);
+      const point = this.getPoint(event);
 
       this.setState({
         selectedShape: this.state.shapes.slice().reverse().find(shape => doesShapeContainPoint(shape, point))
@@ -190,8 +186,8 @@ export default class Editor extends React.Component {
 
       this.setState({
         viewBox: {
-          x: x + dZ * event.pageX / window.innerWidth,
-          y: y + dZ * event.pageY / window.innerHeight,
+          x: x + dZ * event.pageX / this.canvasWidth(),
+          y: y + dZ * event.pageY / this.canvasHeight(),
           width: width - dZ,
           height: height - dZ,
         }
@@ -204,8 +200,8 @@ export default class Editor extends React.Component {
         fill: this.state.fill + halfOpaque,
         stroke: this.state.stroke,
         strokeWidth: this.state.strokeWidth,
-        ...getShape(this.state.tool, getPoint(event), getPoint(event)),
-        startPoint: getPoint(event), // <- Only used in onMouseMouve
+        ...getShape(this.state.tool, this.getPoint(event), this.getPoint(event)),
+        startPoint: this.getPoint(event), // <- Only used in onMouseMouve
       },
     });
 
@@ -216,7 +212,7 @@ export default class Editor extends React.Component {
     this.setState(state => ({
       newShape: {
         ...state.newShape,
-        ...getShape(state.newShape.type, state.newShape.startPoint, getPoint(event)),
+        ...getShape(state.newShape.type, state.newShape.startPoint, this.getPoint(event)),
       },
     }));
   }
@@ -246,6 +242,28 @@ export default class Editor extends React.Component {
     const url = URL.createObjectURL(blob);
 
     return url;
+  }
+
+  getMapArea(screenArea) {
+    const { viewBox } = this.state;
+
+    return {
+      x: viewBox.x + screenArea.x * viewBox.width / this.canvasWidth(),
+      y: viewBox.y + screenArea.y * viewBox.height / this.canvasHeight(),
+      width: screenArea.width * viewBox.width / this.canvasWidth(),
+      height: screenArea.height * viewBox.height / this.canvasHeight(),
+    };
+  }
+  getMapPoint(point) {
+    const { x, y } = this.getMapArea(point);
+    console.log(`point`, point, {x,y}); // DEBUG
+    return { x, y };
+  }
+  getPoint(event) {
+    return this.getMapPoint({
+      x: event.pageX,
+      y: event.pageY,
+    });
   }
 
   render() {
