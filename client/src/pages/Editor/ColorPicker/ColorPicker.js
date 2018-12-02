@@ -1,31 +1,41 @@
 import React from 'react';
 import * as S from './ColorPicker.style.js';
 
+import { toolStore } from '../toolStore'
+
 export default class ColorPicker extends React.Component {
 
+  componentDidMount() {
+    toolStore.addListener(this.onChange)
+  }
+  componentWillUnmount() {
+    toolStore.removeListener(this.onChange)
+  }
+  onChange = () => {
+    this.forceUpdate()
+  }
+
   render() {
-    const set = (prop) => (event) =>
-      this.props.onChange({ [prop]: event.target.value })
-    ;
+    const set = key => event => toolStore.set({ [key]: event.target.value })
 
     return (
       <S.Container>
         <input
           type="color"
-          value={this.props.fill}
+          value={toolStore.fill}
           onChange={set('fill')}
           title="Select fill"
         />
         <input
           type="color"
-          value={this.props.stroke}
+          value={toolStore.stroke}
           onChange={set('stroke')}
           title="Select stroke"
         />
         <input
           type="number"
           min="0"
-          value={this.props.strokeWidth}
+          value={toolStore.strokeWidth}
           onChange={set('strokeWidth')}
           title="Select stroke width"
           style={{maxWidth: '80%'}}

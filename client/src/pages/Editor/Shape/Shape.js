@@ -6,12 +6,12 @@ import Ellipse from './Ellipse/Ellipse';
 export default class Shape extends React.PureComponent {
 
   getStdProps() {
-    const { fill, stroke, strokeWidth } = this.props.shape;
+    const { fill, fillOpacity, stroke, strokeOpacity, strokeWidth } = this.props.shape;
 
     if (this.props.isSelected) {
-      return { fill: '#00a9ff33', stroke: '#00a9ff', strokeWidth  };
+      return { fill: '#00a9ff33', fillOpacity, stroke: '#00a9ff', strokeOpacity, strokeWidth  };
     } else {
-      return { fill, stroke, strokeWidth };
+      return { fill, fillOpacity, stroke, strokeOpacity, strokeWidth };
     }
   }
 
